@@ -1,0 +1,4 @@
+C:/Users/bubub/Desktop/study/os_labs/lab2/rep/_build/CMakeFiles/launcher_lib.dir
+C:/Users/bubub/Desktop/study/os_labs/lab2/rep/_build/CMakeFiles/Main.dir
+C:/Users/bubub/Desktop/study/os_labs/lab2/rep/_build/CMakeFiles/edit_cache.dir
+C:/Users/bubub/Desktop/study/os_labs/lab2/rep/_build/CMakeFiles/rebuild_cache.dir

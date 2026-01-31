@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Sensor Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; text-align: center; color: #333; }
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; }
+        .card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .temp-display { font-size: 4em; font-weight: bold; color: #2c3e50; }
+        .status { color: #7f8c8d; font-size: 0.9em; margin-top: -10px; margin-bottom: 20px; }
+        
+        .btn-group { margin-top: 15px; }
+        .btn { padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 0 5px; transition: background 0.3s; }
+        .btn:hover { background: #2980b9; }
+        /* Класс для активной кнопки */
+        .btn.active { background: #21618c; box-shadow: inset 0 3px 5px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Текущая температура</h2>
+        <div id="tempVal" class="temp-display">--.-</div>
+        <div id="timeVal" class="status">Ожидание данных...</div>
+    </div>
+
+    <div class="card">
+        <canvas id="myChart"></canvas>
+        <div class="btn-group">
+            <!-- Добавляем передачу this, чтобы знать, какую кнопку подсветить -->
+            <button class="btn" onclick="setDuration(60, this)">1 Минута</button>
+            <button class="btn active" onclick="setDuration(300, this)">5 Минут</button>
+            <button class="btn" onclick="setDuration(3600, this)">1 Час</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Глобальная переменная для хранения текущего выбранного интервала
+    let currentDuration = 300; // По умолчанию 5 минут
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Температура (°C)',
+                data: [],
+                borderColor: '#e74c3c',
+                backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { display: true, title: { display: true, text: 'Время' } },
+                y: { beginAtZero: false, title: { display: true, text: 'Градусы' } }
+            }
+        }
+    });
+
+    function formatTime(unix_timestamp) {
+        return new Date(unix_timestamp * 1000).toLocaleTimeString();
+    }
+
+    async function fetchCurrent() {
+        try {
+            const res = await fetch('/api/current');
+            if (!res.ok) throw new Error("Ошибка сети");
+            const data = await res.json();
+            document.getElementById('tempVal').innerText = data.value.toFixed(1) + " °C";
+            document.getElementById('timeVal').innerText = "Обновлено: " + formatTime(data.timestamp);
+        } catch (e) {
+            console.error("Error fetching current:", e);
+        }
+    }
+
+    // Функция для смены режима (нажатие кнопки)
+    function setDuration(seconds, btnElement) {
+        currentDuration = seconds; // Запоминаем выбор пользователя
+        updateHistory();           // Обновляем график немедленно
+
+        // Обновляем подсветку кнопок
+        if (btnElement) {
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+    }
+
+    // Запрос истории (теперь использует глобальную переменную currentDuration)
+    async function updateHistory() {
+        try {
+            // Используем запомненную длительность вместо жесткой передачи аргумента
+            const res = await fetch(`/api/history?duration=${currentDuration}`);
+            if (!res.ok) throw new Error("Ошибка сети");
+            const data = await res.json();
+            
+            myChart.data.labels = data.map(d => formatTime(d.timestamp));
+            myChart.data.datasets[0].data = data.map(d => d.value);
+            myChart.update();
+        } catch (e) {
+            console.error("Error updating history:", e);
+        }
+    }
+
+    // Автообновление
+    setInterval(fetchCurrent, 1000);
+    
+    // ВАЖНОЕ ИСПРАВЛЕНИЕ: Теперь вызываем updateHistory без параметров,
+    // чтобы она использовала глобальную currentDuration
+    setInterval(updateHistory, 5000);
+
+    // Первичный запуск
+    fetchCurrent();
+    updateHistory();
+</script>
+
+</body>
+</html>

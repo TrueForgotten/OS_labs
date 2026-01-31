@@ -1,2 +1,0 @@
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/w64devkit/bin/ar.exe qc libsqlite_lib.a CMakeFiles/sqlite_lib.dir/sqlite/sqlite3.c.obj
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/w64devkit/bin/ranlib.exe libsqlite_lib.a

@@ -1,0 +1,4 @@
+C:/Users/bubub/Desktop/study/os_labs/lab4/rep/build/CMakeFiles/emulator.dir
+C:/Users/bubub/Desktop/study/os_labs/lab4/rep/build/CMakeFiles/logger.dir
+C:/Users/bubub/Desktop/study/os_labs/lab4/rep/build/CMakeFiles/edit_cache.dir
+C:/Users/bubub/Desktop/study/os_labs/lab4/rep/build/CMakeFiles/rebuild_cache.dir

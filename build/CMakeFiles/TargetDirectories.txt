@@ -1,5 +1,0 @@
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/build/CMakeFiles/sqlite_lib.dir
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/build/CMakeFiles/emulator.dir
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/build/CMakeFiles/logger.dir
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/build/CMakeFiles/edit_cache.dir
-C:/Users/bubub/Desktop/study/os_labs/lab5/rep/build/CMakeFiles/rebuild_cache.dir
